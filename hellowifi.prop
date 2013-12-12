@@ -1,0 +1,23 @@
+{
+  "cron" : {
+    "hellowifi" :   { 
+      "name"       : "hellowifi",
+      "description": "Permet de detecté le portable en wifi",
+      "time"       : "0 */6 * * * *",
+	  "dossier"    : "Sarah",
+	  "disk"       : "C",
+	  "notification" : "TRUE",
+	  "creation_file" : "TRUE"
+     }
+  },
+  
+  "modules" : { 
+    "hellowifi" :   {
+      "description": "Permet de detecté le portable en wifi ",
+      "version"    : "1.0",
+	  "dossier"    : "Sarah",
+	  "disk" : "C",
+	  "notification" : "TRUE"
+	   }
+  }
+}

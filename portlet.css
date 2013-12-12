@@ -1,0 +1,10 @@
+
+.plugin-gridster.hellowifi .front {
+  background: #FFFFFF url('image/reseau.gif') center 10px;
+  background-size:   140px 140px;
+  background-repeat: no-repeat;
+}
+
+.plugin-gridster.hellowifi .back {
+  background: #FFFFFF;
+}
