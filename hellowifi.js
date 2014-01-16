@@ -2,17 +2,17 @@
 // ==============================================
 // Scan votre réseau TCP/IP
 // Auteur Ferreira Agostinho
-// Version RC.2     12.2013
+// Version RC 1.3     01.2014
 // ==============================================
 // Rajoute de la creation automatique des fichier texte.
 // Correction des variables en doublon.
-
+// Automatisation de la creation fichier au premier demarrage.
 var exec = require('child_process').exec;
 var fs = require("fs");
 var urlfile = __dirname+'\\';
 // ECRIRE LA MAC ADRESSE EN MINUSCULE 
-  var mac_mobiles=new Array('90-01-3b-e8-25-44',' c0-d0-44-5d-79-35','98-0c-82-ec-d6-ad');
-  // -- LIGNE  A COPIER nom_mobile 
+  var mac_mobiles=new Array('90-01-3b-e8-25-44',' c0-d0-44-5d-79-35','cc-3a-61-af-28-3b');
+// -- LIGNE  A COPIER nom_mobile 
   var nom_mobiles=new Array('papa','maman','enfant');
 //========================================================================================  
 // ------------------------------------------
@@ -21,69 +21,83 @@ var urlfile = __dirname+'\\';
 exports.cron = function(callback, task , SARAH ){
    // ===============================================================================================
   // LECTURE DU FICHIER ATTENDRE 1 MINUTE AVANT DE LANCER LA DETECTION
- setTimeout(function(){
+setTimeout(function(){
     // DEBUT DE LA BOUCLE DE RECHERCHE DE PLUSIEUR ADRESS MAC
     var donne=0; 
-    mac_mobiles.forEach(function(mac_mobile){
-		// DEBUT LECTURE FICHER DES MAC ADRESS
-		var resulat = readfile(urlfile+'mac_adres.txt');
-		// ------ FIN
-		// RECHERCHE DE LA MAC ADRESS
-		var machello="";
-		machello = resulat.search(mac_mobile);
-		// SI TU TROUVE LA MAC ADDRESS CONTINUE
-		if (machello !== "-1" || machello !== "" ){
-			// EXTRACTION DE L'ADRESSE IP
-			var ip_mobile=resulat.substring(machello-24,machello-2);
-			var mobile_present="";
-				if ( ip_mobile.length >= 1  ){
-				    // MAC ADRESS PRESENTE SUR LE RESEAU 
-					var mobile_present= 3;		
-					}
-			}
-		// -- FIN
-		// LECTURE DE L'ETAT AVANT MODIFICATION
-		var retour_etat = readfile(urlfile+nom_mobiles[donne]+".txt");
-		if (mobile_present >= 1 ){
-					//
-					// mac adresse on line
-					console.log( nom_mobiles[donne]+' ON LINE ');
-					save_file(urlfile+nom_mobiles[donne]+".txt",'TRUE');
-					// NOTIFICATION
-					if (retour_etat != "TRUE") {
+		mac_mobiles.forEach(function(mac_mobile){
+				// DEBUT LECTURE FICHER DES MAC ADRESS
+				var resulat = readfile(urlfile+'mac_adres.txt');
+				// ------ FIN
+				// RECHERCHE DE LA MAC ADRESS
+				var machello="";
+				machello = resulat.search(mac_mobile);
+				// SI TU TROUVE LA MAC ADDRESS CONTINUE
+						if (machello !== "-1" || machello !== "" ){
+									// EXTRACTION DE L'ADRESSE IP
+									var ip_mobile=resulat.substring(machello-24,machello-2);
+									var mobile_present="";
+											if ( ip_mobile.length >= 1  ){
+														// MAC ADRESS PRESENTE SUR LE RESEAU 
+														var mobile_present= 3;		
+									}
+						}
+				// -- FIN
+				// LECTURE DE L'ETAT AVANT MODIFICATION
+				var retour_etat = readfile(urlfile+nom_mobiles[donne]+".txt");
+				var retour_pos = readfile(urlfile+nom_mobiles[donne]+"_pos.txt");
+// debug
+		console.log( nom_mobiles[donne]+' ETAT_'+retour_etat+'  POSITION_'+retour_pos);
+//		
+							if (mobile_present >= 1 ){
+									//
+									// mac adresse on line
+									console.log( nom_mobiles[donne]+' ON LINE ');
+									save_file(urlfile+nom_mobiles[donne]+"_pos.txt","TRUE");
+									save_file(urlfile+nom_mobiles[donne]+".txt",'TRUE');
+									// NOTIFICATION ne pas notifier si deja fais
+									if (retour_etat != "TRUE" && retour_pos !="TRUE" ) {
+												// Debut sequence presence
+												// Fin sequence presence
 												if (task.notification == "TRUE") {
-															 SARAH.speak(nom_mobiles[donne]+' viens de rentre a la maison');
+															 SARAH.speak(nom_mobiles[donne]+' viens de rentrer a la maison');
 															 }
 												}
-					//================================================================================================							
-					} else{
-						// mac adresse off line
-						console.log(nom_mobiles[donne]+' OFF LINE ');
-						save_file(urlfile+nom_mobiles[donne]+".txt",'FALSE');
-						// NOTIFICATION
-						if (retour_etat != "FALSE") {
+																
+									//================================================================================================							
+							} else{
+									// mac adresse off line
+									console.log(nom_mobiles[donne]+' OFF LINE ');
+									save_file(urlfile+nom_mobiles[donne]+"_pos.txt","FALSE");
+									save_file(urlfile+nom_mobiles[donne]+".txt",'FALSE');
+									// NOTIFICATION ne pas notifier si déja fais
+									if (retour_etat != "FALSE" && retour_pos !="FALSE" ) {
+												// Debut sequence absence
+												// Fin sequence absence
 												if (task.notification == "TRUE") {
 															 SARAH.speak(nom_mobiles[donne]+' viens de sortir de la maison');
 															 }
 												}
-						}
-	    // -- FIN BOUCLE IP 
-    ++donne;	  
-	});	
+															
+							}
+				// -- FIN BOUCLE IP 
+				++donne;	  
+		});	
 	  //  
 },60000);
 	// ==========================================================================	
 	// CREATION DES FICHIERS EQUIPEMENT BOUCLE 
 	// ==========================================================================
+	console.log( 'creation_file_'+task.creation_file);
 	if (task.creation_file=="TRUE"){
 		nom_mobiles.forEach(function(nom_mobile){
-		// LECTURE DU TABLEAU DES NOM
-		 var rab=save_file(urlfile+nom_mobile+".txt", "FALSE");
-								});
-	// CHANGE LA VARIABLE POUR EVITE DE LE REFAIRE 							
-	task.creation_file=="FALSE"
+						// LECTURE DU TABLEAU DES NOM
+						var rab=save_file(urlfile+nom_mobile+".txt", "FALSE");
+						var rab=save_file(urlfile+nom_mobile+"_pos.txt", "FALSE");
+						});
+						// CHANGE LA VARIABLE POUR EVITE DE LE REFAIRE 							
+		task.creation_file="FALSE";
 	}
-    // CREATION FICHIER FIN 
+	// CREATION FICHIER FIN 
     // =========================================================================	
 	// DEBUT DU SCAN IP MAC ADRESS DU RESEAU
     // SCAN LES IP DU RESEAU 
