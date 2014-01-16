@@ -1,0 +1,2 @@
+for /l %i in (1,1,254) do @ping 192.168.1.%i -n 1 -w 100 | find "Reply"
+

@@ -3,7 +3,7 @@
     "hellowifi" :   { 
       "name"       : "hellowifi",
       "description": "Permet de detecté le portable en wifi",
-      "time"       : "0 */6 * * * *",
+      "time"       : "0 */2 * * * *",
 	  "dossier"    : "Sarah",
 	  "disk"       : "C",
 	  "notification" : "TRUE",
@@ -14,10 +14,11 @@
   "modules" : { 
     "hellowifi" :   {
       "description": "Permet de detecté le portable en wifi ",
-      "version"    : "1.0",
+      "version"    : "1.1",
 	  "dossier"    : "Sarah",
 	  "disk" : "C",
-	  "notification" : "TRUE"
+	  "notification" : "TRUE",
+	  "creation_file" : "TRUE"
 	   }
   }
 }

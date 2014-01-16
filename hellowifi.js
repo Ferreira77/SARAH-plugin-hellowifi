@@ -9,6 +9,7 @@
 
 var exec = require('child_process').exec;
 var fs = require("fs");
+var urlfile = __dirname+'\\';
 // ECRIRE LA MAC ADRESSE EN MINUSCULE 
   var mac_mobiles=new Array('90-01-3b-e8-25-44',' c0-d0-44-5d-79-35','98-0c-82-ec-d6-ad');
   // -- LIGNE  A COPIER nom_mobile 
@@ -18,17 +19,7 @@ var fs = require("fs");
 //  CRON
 // ------------------------------------------
 exports.cron = function(callback, task , SARAH ){
-  if (!task.dossier){
-    console.log("cron :hellowifi Pas de dossier");
-    return;
-  }
-   if (!task.disk){
-    console.log("cron :hellowifi Pas de disque");
-    return;
-  }
-  // ===============================================================================================
-  var urlfile = task.disk+":\\"+task.dossier+"\\plugins\\hellowifi\\";   
-  // ===============================================================================================
+   // ===============================================================================================
   // LECTURE DU FICHIER ATTENDRE 1 MINUTE AVANT DE LANCER LA DETECTION
  setTimeout(function(){
     // DEBUT DE LA BOUCLE DE RECHERCHE DE PLUSIEUR ADRESS MAC
@@ -120,7 +111,6 @@ exports.action = function(data, callback, config, SARAH){
   // config module
   config = config.modules.hellowifi;
  // ==================================================================================================================== 		
- var urlfile = config.disk+":\\"+config.dossier+"\\plugins\\hellowifi\\"; 
  // COMPTE LES PRESENTS 
   var donne=0;
 		nom_mobiles.forEach(function(nom_mobile){
@@ -184,9 +174,9 @@ exports.action = function(data, callback, config, SARAH){
 		case "CALL":
 		// COMPTE LES PRESENCES
 			if (donne >=1){
-			            SARAH.speak('Je detecte '+donne+' personnes ');
+			            SARAH.speak('Je détécté '+donne+' personnes ');
 						} else {
-								 SARAH.speak('Je detecte personnes ');
+								 SARAH.speak('Je détécté personnes ');
 								 }
 		break;
 		
