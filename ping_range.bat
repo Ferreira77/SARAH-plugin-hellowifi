@@ -15,7 +15,7 @@ Set _t0=500
 Set _t1=1
 :ending IP (last number)
 Set _t2=64
-Set _t4=172.20.10.
+Set _t4=192.168.1.
 for /L %%I in (%_t1%,1,%_t2%) do set _t3=%%I & (ping %_t4%%%I -n 1 -w %_t0% >nul
 ) & call:_e!errorlevel!
 echo All IPs tested
